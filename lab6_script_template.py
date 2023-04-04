@@ -24,54 +24,51 @@ def main():
         delete_installer(installer_path)
 
 def get_expected_sha256():
-    
+    # Downloads the sha256 using the link provided in the file_url variable 
     file_url = 'http://download.videolan.org/pub/videolan/vlc/3.0.18/win64/vlc-3.0.18-win64.7z.sha256'
     resp_msg = requests.get(file_url)
+    # Checks to make sure the download worked 
     if resp_msg.status_code == requests.code.ok:
         file_contents = resp_msg.text 
-        hash = file_contents.split()
-    return 
+        
+    return file_contents
 
 def download_installer():
-    
+    # Downloads the installer using the link provided in the installer_url variable 
     installer_url = 'http://download.videolan.org/pub/videolan/vlc/3.0.18/win64/'
     resp_msg = requests.get(installer_url)
+    # Checks to make the download worked 
     if resp_msg.status_code == requests.code.ok:
         file_content = resp_msg.content
     
-    return 
+    return file_content
+
 def installer_ok(installer_data, expected_sha256):
+    # Checks the hash to verify the installer is working and is what we wanted to download
+    expected_sha256 =hashlib.sha256(installer_data).hexdigest()
     
-    installer_url = 'http://download.videolan.org/pub/videolan/vlc/3.0.18/win64'
-    resp_msg = requests.get(installer_url)
-    if resp_msg.status_code == requests.code.ok:
-        file_content = resp_msg.content 
-        image_hash = hashlib.sha256(file_content).hexdigest()
-        print(image_hash)
-    return
+    return expected_sha256
+
 
 def save_installer(installer_data):
-    
+    # Saves the installer 
     installer_url = 'http://download.videolan.org/pub/videolan/vlc/3.0.18/win64'
     resp_msg = requests.get(installer_url)
     if resp_msg.status_code == requests.code.ok:
         file_content = resp_msg.content 
     with open(r'C:\temp\vlc\3.0.18', 'wb') as file:
         file.write(file_content)
-    return
+    
 
 def run_installer(installer_path):
-   
+    # Runs the installer that is specified with the installer path variable 
     installer_path = r'C:\temp\vlc-3.0.18-win64.exe'
     subprocess.run([installer_path, '/L=1033', '/S'])
     
-    return
     
 def delete_installer(installer_path):
-    
-    installer_path = r'C:\temp\vlc-3.0.18-win64.exe'
+    # Removes the installer
     os.remove(installer_path)
-    return
 
 if __name__ == '__main__':
     main()
